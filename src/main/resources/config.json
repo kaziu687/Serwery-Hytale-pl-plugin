@@ -1,0 +1,14 @@
+{
+  "_1": "Jak poprawnie skonfigurować plugin przeczytasz pod adresem:",
+  "_2": "https://serwery-hytale.pl/nagrody-za-glosowanie",
+  "identyfikator": "TUTAJ_WPISZ_IDENTYFIKATOR",
+  "_3": "Lista komend, która zostanie wysłana na konsolę po zweryfikowaniu głosu",
+  "_4": "{GRACZ} zostanie zastąpione nazwą gracza korzystającego z komendy",
+  "komendy": [
+    "give {GRACZ} Rock_Gem_Diamond --quantity 5",
+    "give {GRACZ} Ingredient_Bar_Gold --quantity 10",
+    "say {GRACZ} zaglosowal na serwer!"
+  ],
+  "wysylajListeGraczy": true,
+  "wysylajListePluginow": true
+}

@@ -1,0 +1,16 @@
+{
+  "Group": "IBC-Games",
+  "Name": "Serwery-Hytale-PL",
+  "Version": "${version}",
+  "Website": "https://serwery-hytale.pl/",
+  "Main": "pl.ibcgames.serweryhytale.SerweryHytalePlugin",
+  "ServerVersion": "*",
+  "Description": "Serwer Query pozwalający na integrację z listą serwerów serwery-hytale.pl - umożliwia również odbieranie nagród automatycznie",
+  "Authors": [
+    {"Name": "PanSzelescik"},
+    {"Name": "kaziu687"},
+    {"Name": "kisi69"}
+  ],
+  "DisabledByDefault": false,
+  "IncludesAssetPack": false
+}
