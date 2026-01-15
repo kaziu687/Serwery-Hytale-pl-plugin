@@ -41,6 +41,13 @@ public final class Consts {
     public static final Message RELOAD_ERROR = Message.raw("Blad podczas przeladowywania konfiguracji!").color(Color.red);
     public static final Message RELOAD_ERROR_EXCEPTION = Message.raw("Wystapil blad podczas przeladowywania konfiguracji!").color(Color.red);
 
+    // WeryfikacjaCommand
+    public static final Message VERIFY_CONSOLE_ONLY = Message.raw("Ta komenda jest dostepna tylko z konsoli serwera").color(Color.red);
+    public static final Message VERIFY_TOKEN_EMPTY = Message.raw("Token weryfikacyjny jest pusty").color(Color.red);
+    public static final Message VERIFY_TOKEN_TOO_LONG = Message.raw("Token weryfikacyjny jest za dlugi").color(Color.red);
+    public static final Message VERIFY_SUCCESS = Message.raw("Mozesz teraz zweryfikowac serwer na Serwery-Hytale.pl\n").color(Color.green)
+            .insert(Message.raw("Zaloguj sie, odszukaj swoj serwer i kliknij przycisk obok podpisu \"weryfikacja\"").color(Color.green));
+
     private Consts() {
     }
 }

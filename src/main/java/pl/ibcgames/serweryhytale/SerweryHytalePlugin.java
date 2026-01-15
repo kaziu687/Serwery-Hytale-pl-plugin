@@ -1,6 +1,5 @@
 package pl.ibcgames.serweryhytale;
 
-import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.command.system.CommandManager;
@@ -16,13 +15,13 @@ import java.nio.file.*;
 
 public class SerweryHytalePlugin extends JavaPlugin {
 
-    private HytaleLogger logger;
     private Path configPath;
     private SerweryHytaleConfig config;
     private VotifierApiClient apiClient;
     private CooldownManager cooldownManager;
     private RewardExecutor rewardExecutor;
     private QueryListener queryListener;
+    private String verifyToken = "";
 
     public SerweryHytalePlugin(JavaPluginInit init) {
         super(init);
@@ -30,8 +29,6 @@ public class SerweryHytalePlugin extends JavaPlugin {
 
     @Override
     protected void start() {
-        logger = getLogger();
-
         try {
             cooldownManager = new CooldownManager();
             configPath = Paths.get("mods", "Serwery-Hytale-PL", "config.json"); // getDataDirectory();
@@ -42,14 +39,15 @@ public class SerweryHytalePlugin extends JavaPlugin {
             cm.register(new TestCommand(this));
             cm.register(new ReloadCommand(this));
             cm.register(new TokenCommand(this));
+            cm.register(new WeryfikacjaCommand(this));
 
             queryListener = new QueryListener(this);
 
             if (this.reload()) {
-                logger.atInfo().log("Serwery-Hytale-PL uruchomiony pomyslnie!");
+                getLogger().atInfo().log("Serwery-Hytale-PL uruchomiony pomyslnie!");
             }
         } catch (Exception ex) {
-            logger.atSevere().log("Blad krytyczny podczas inicjalizacji pluginu", ex);
+            getLogger().atSevere().log("Blad krytyczny podczas inicjalizacji pluginu", ex);
         }
     }
 
@@ -99,6 +97,14 @@ public class SerweryHytalePlugin extends JavaPlugin {
 
     public SerweryHytaleConfig getConfig() {
         return config;
+    }
+
+    public String getVerifyToken() {
+        return verifyToken;
+    }
+
+    public void setVerifyToken(String verifyToken) {
+        this.verifyToken = verifyToken;
     }
 }
 

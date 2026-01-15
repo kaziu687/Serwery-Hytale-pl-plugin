@@ -42,6 +42,7 @@ public class QueryData {
     private final int protocolVersion;
     private final String protocolHash;
     private final List<PluginBase> plugins;
+    private final String verifyToken;
 
     public QueryData(SerweryHytalePlugin plugin) {
         this.plugin = plugin;
@@ -62,6 +63,7 @@ public class QueryData {
         this.protocolVersion = ProtocolSettings.PROTOCOL_VERSION;
         this.protocolHash = ProtocolSettings.PROTOCOL_HASH;
         this.plugins = PluginManager.get().getPlugins();
+        this.verifyToken = plugin.getVerifyToken();
     }
 
     public ByteBuf createPacket(ByteBufAllocator alloc) {
@@ -86,7 +88,6 @@ public class QueryData {
         writeString(buf, this.protocolHash);
 
         var config = this.plugin.getConfig();
-        // Player list
         if (config.sendPlayersList()) {
             for (var player : this.players) {
                 writeString(buf, player.getUsername());
@@ -94,7 +95,6 @@ public class QueryData {
             }
         }
 
-        // Plugin list
         if (config.sendPluginsList()) {
             buf.writeIntLE(this.plugins.size());
             for (var pl : this.plugins) {
@@ -104,8 +104,11 @@ public class QueryData {
                 buf.writeBoolean(pl.isEnabled());
             }
         }
+        else {
+            buf.writeIntLE(0);
+        }
 
-        writeString(buf, ""); // ???
+        writeString(buf, this.verifyToken);
 
         return buf;
     }
@@ -198,6 +201,7 @@ public class QueryData {
                 ", players=" + playerList +
                 ", pluginsSize=" + (config.sendPluginsList() ? this.plugins.size() : 0) +
                 ", plugins=" + pluginList +
+                ", verifyToken='" + this.verifyToken + '\'' +
                 '}';
     }
 }
