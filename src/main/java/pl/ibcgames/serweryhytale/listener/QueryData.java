@@ -16,6 +16,8 @@ import pl.ibcgames.serweryhytale.SerweryHytalePlugin;
 import javax.annotation.Nonnull;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +35,7 @@ public class QueryData {
     private final String serverName;
     private final String authMode;
     private final String motd;
+    private final int playersCount;
     private final List<PlayerRef> players;
     private final int maxPlayers;
     private final int port;
@@ -49,12 +52,12 @@ public class QueryData {
 
         var hytaleServer = HytaleServer.get();
         var hytaleConfig = hytaleServer.getConfig();
-        var players = Universe.get().getPlayers();
 
         this.serverName = hytaleConfig.getServerName();
         this.authMode = ServerAuthManager.getInstance().getAuthMode().name();
         this.motd = hytaleConfig.getMotd();
-        this.players = players;
+        this.playersCount = Universe.get().getPlayerCount();
+        this.players = getPlayers();
         this.maxPlayers = Math.max(hytaleConfig.getMaxPlayers(), 0);
         this.port = getHostPort();
         this.version = getVersion();
@@ -78,7 +81,7 @@ public class QueryData {
         writeString(buf, this.serverName);
         writeString(buf, this.authMode);
         writeString(buf, this.motd);
-        buf.writeIntLE(this.players.size());
+        buf.writeIntLE(this.playersCount);
         buf.writeIntLE(this.maxPlayers);
         buf.writeShortLE(this.port);
         writeString(buf, this.version);
@@ -89,10 +92,14 @@ public class QueryData {
 
         var config = this.plugin.getConfig();
         if (config.sendPlayersList()) {
+            buf.writeIntLE(this.players.size());
             for (var player : this.players) {
                 writeString(buf, player.getUsername());
                 writeUUID(buf, player.getUuid());
             }
+        }
+        else {
+            buf.writeIntLE(0);
         }
 
         if (config.sendPluginsList()) {
@@ -138,6 +145,15 @@ public class QueryData {
         } catch (SocketException ignored) {
         }
         return 5520; // Default port
+    }
+
+    private static List<PlayerRef> getPlayers() {
+        var players = new ArrayList<>(Universe.get().getPlayers());
+        Collections.shuffle(players);
+        return players
+                .stream()
+                .limit(50)
+                .toList();
     }
 
     private static String getVersion() {
@@ -190,7 +206,7 @@ public class QueryData {
                 "serverName='" + this.serverName + '\'' +
                 ", authMode='" + this.authMode + '\'' +
                 ", motd='" + this.motd + '\'' +
-                ", playersCount=" + this.players.size() +
+                ", playersCount=" + this.playersCount +
                 ", maxPlayers=" + this.maxPlayers +
                 ", port=" + this.port +
                 ", version='" + this.version + '\'' +
