@@ -32,6 +32,7 @@ public class QueryData {
 
     private final SerweryHytalePlugin plugin;
 
+    private final String verifyToken;
     private final String serverName;
     private final String authMode;
     private final String motd;
@@ -45,7 +46,6 @@ public class QueryData {
     private final int protocolVersion;
     private final String protocolHash;
     private final List<PluginBase> plugins;
-    private final String verifyToken;
 
     public QueryData(SerweryHytalePlugin plugin) {
         this.plugin = plugin;
@@ -53,6 +53,7 @@ public class QueryData {
         var hytaleServer = HytaleServer.get();
         var hytaleConfig = hytaleServer.getConfig();
 
+        this.verifyToken = plugin.getVerifyToken();
         this.serverName = hytaleConfig.getServerName();
         this.authMode = ServerAuthManager.getInstance().getAuthMode().name();
         this.motd = hytaleConfig.getMotd();
@@ -66,7 +67,6 @@ public class QueryData {
         this.protocolVersion = ProtocolSettings.PROTOCOL_VERSION;
         this.protocolHash = ProtocolSettings.PROTOCOL_HASH;
         this.plugins = PluginManager.get().getPlugins();
-        this.verifyToken = plugin.getVerifyToken();
     }
 
     public ByteBuf createPacket(ByteBufAllocator alloc) {
@@ -78,6 +78,7 @@ public class QueryData {
         // Response type
         buf.writeByte(TYPE_FULL);
 
+        writeString(buf, this.verifyToken);
         writeString(buf, this.serverName);
         writeString(buf, this.authMode);
         writeString(buf, this.motd);
@@ -114,8 +115,6 @@ public class QueryData {
         else {
             buf.writeIntLE(0);
         }
-
-        writeString(buf, this.verifyToken);
 
         return buf;
     }
@@ -203,7 +202,8 @@ public class QueryData {
                 .toList() : "[]";
 
         return "QueryData{" +
-                "serverName='" + this.serverName + '\'' +
+                "verifyToken='" + this.verifyToken + '\'' +
+                ", serverName='" + this.serverName + '\'' +
                 ", authMode='" + this.authMode + '\'' +
                 ", motd='" + this.motd + '\'' +
                 ", playersCount=" + this.playersCount +
@@ -217,7 +217,6 @@ public class QueryData {
                 ", players=" + playerList +
                 ", pluginsSize=" + (config.sendPluginsList() ? this.plugins.size() : 0) +
                 ", plugins=" + pluginList +
-                ", verifyToken='" + this.verifyToken + '\'' +
                 '}';
     }
 }
